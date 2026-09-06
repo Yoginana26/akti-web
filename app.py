@@ -7,103 +7,31 @@ st.set_page_config(page_title="Rekap Test Fisik Mahasiswa Akti", page_icon="⚙�
 # URL Web App Google Apps Script Anda
 WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzuNBeBPH6BiHr6MFjS03SIT3oAPYvjhnBL4V81Y5ylrZlzx3RIkQcLWGXcdRNcC99Xgw/exec"
 
-# Daftar Nama Mahasiswa AKTI Sesuai Gambar (Validasi Tepat 100%)
+# Daftar Referensi Nama Mahasiswa AKTI (Dapat diedit bebas di bawah)
 MAHASISWA_LIST = [
-    "- Pilih Nama Mahasiswa -",
-    'ABDUL AZIS HERMAWAN',
-    'ABDULRAHMAN AL BARBASI',
-    'ADRIAN RIZKI ADITIYA',
-    'AFFAN HIDAYATUR RAKHMAN',
-    'AGUS SINATRIYA',
-    'AHMAD HUMAEDI',
-    'AJIE ALAMSYAH',
-    'AKBAR FEBRIANO PERKASA',
-    'ALLAN YUDHA WIDANARTO',
-    'ANDI HERMAWAN',
-    'ANDIK AWALURRIZQI',
-    'ANDRA',
-    'ANELKA RAHMAT SETYADI',
-    'AURELIA LUNA FARHANAH',
-    'AZKA FAR\'AZ ARHAB',
-    'CAHYO KUSUMA PERMADI',
-    'CATUR MUBAROK',
-    'DAFA ADQILA',
-    'DANI ARDIANSYAH',
-    'DEDI IRAWAN',
-    'DIMAS RAMADHAN',
-    'DIMAS RIFKI PERMANA',
-    'DIMAS SYAHPUTRA',
-    'ERLAND AS SAHLAN',
-    'FAHMI RIDHO',
-    'FAIZ ABDILLAH',
-    'FAJAR RISKI',
-    'FAJAR RIZKI PRATAMA',
-    'FATHURRAHMAN AL GHOZY',
-    'FELIX FEBRIAN HARI PANGESTU',
-    'HAFIS HIBATULLAH',
-    'HASBI NOVA RIANDA',
-    'HOPI NUROHMAN',
-    'ILHAM SUCI ANSHORI',
-    'ILHAM YUSUF KHANAFI',
-    'ISLA KHOIRONUL IZAZ',
-    'ISYA SYAEFUDDIN TSALAS',
-    'JAFFAR AS SIDHIQ',
-    'JAVARA FIRZI NURFAIDHILAH',
-    'KINANTI DWI PUTRIA',
-    'LISA PUTRIANI',
-    'LUTFHY ASROFUL ANAM',
-    'M. RAFFA ZEIN',
-    'M. RASSYA ADZIKRA',
-    'MAHADAYA BISMA PUTRA NUR ISTANTO',
-    'MAHESA ALIF QUROTA AYUN',
-    'MERI MARLIANA',
-    'MUCH ULINNUHA',
-    'MUHAMAD AVISENNA',
-    'MUHAMAD FADIL ARMAN',
-    'MUHAMAD RAFLI',
-    'MUHAMMAD ADIEB ASSHULTHONI',
-    'MUHAMMAD AGASTYA DHAFA',
-    'MUHAMMAD AMMAR FIRJATULLAH',
-    'MUHAMMAD DAVIN ALFIANSYAH',
-    'MUHAMMAD DIAS IBRAHIM',
-    'MUHAMMAD DZAKKI RAMASYAH',
-    'MUHAMMAD FAIQ HAIDAR',
-    'MUHAMMAD HAFADZA ALGHIFARY',
-    'MUHAMMAD HARY ADI SYAPUTRA PURBA',
-    'MUHAMMAD HATRAS',
-    'MUHAMMAD KHAIDAR ALI',
-    'NARASHEVA MAHARDIKA',
-    'NAUFAL ARAFIF APRILIAN',
-    'NAUFAL KHOIRUDIN',
-    'NAYLA AULIA BERLIANA LUKMAN',
-    'NAZWA HANIDA',
-    'NURWAHYU UMBARA',
-    'PANDU ALFIAN EZRA',
-    'PAULUS SADHANA KUS DANANG MUSTIKO',
-    'PUTRI ANDINI',
-    'PUTRI APRILIA',
-    'RADIF MUHAMMAD SALMAN',
-    'RADJA PUTRA AKMAL MALIKI',
-    'RAFID DAFFA ABIYYU',
-    'RANDY ARYANTO',
-    'REIHAN FADHILAH',
-    'RENDY ARJIYADI SAPUTRA',
-    'RESTU PRANANDA ADITIYA',
-    'REVALDO',
-    'REYHAN ADLI DZAKI HAVILA',
-    'REYHAN KURNIAWAN',
-    'RIFKY AL GHOZALI',
-    'RIFQI KHOERUS SAFI',
-    'RISKI SURYA PRATAMA',
-    'RIZQI MAULANA',
-    'SINDIYANI',
-    'TARUNA',
-    'TEGGAR RAMADHAN',
-    'TRI SETYANI ANINDITA',
-    'USAMAH',
-    'VAREL MAULANA',
-    'WAHYU AJI SASONGKO',
-    'ZICO BRILIYAN ANDREANO'
+    'ABDUL AZIS HERMAWAN', 'ABDULRAHMAN AL BARBASI', 'ADRIAN RIZKI ADITIYA', 'AFFAN HIDAYATUR RAKHMAN',
+    'AGUS SINATRIYA', 'AHMAD HUMAEDI', 'AJIE ALAMSYAH', 'AKBAR FEBRIANO PERKASA', 'ALLAN YUDHA WIDANARTO',
+    'ANDI HERMAWAN', 'ANDIK AWALURRIZQI', 'ANDRA', 'ANELKA RAHMAT SETYADI', 'AURELIA LUNA FARHANAH',
+    'AZKA FAR\'AZ ARHAB', 'CAHYO KUSUMA PERMADI', 'CATUR MUBAROK', 'DAFA ADQILA', 'DANI ARDIANSYAH',
+    'DEDI IRAWAN', 'DIMAS RAMADHAN', 'DIMAS RIFKI PERMANA', 'DIMAS SYAHPUTRA', 'ERLAND AS SAHLAN',
+    'FAHMI RIDHO', 'FAIZ ABDILLAH', 'FAJAR RISKI', 'FAJAR RIZKI PRATAMA', 'FATHURRAHMAN AL GHOZY',
+    'FELIX FEBRIAN HARI PANGESTU', 'HAFIS HIBATULLAH', 'HASBI NOVA RIANDA', 'HOPI NUROHMAN',
+    'ILHAM SUCI ANSHORI', 'ILHAM YUSUF KHANAFI', 'ISLA KHOIRONUL IZAZ', 'ISYA SYAEFUDDIN TSALAS',
+    'JAFFAR AS SIDHIQ', 'JAVARA FIRZI NURFAIDHILAH', 'KINANTI DWI PUTRI', 'LISA PUTRIANI',
+    'LUTFHY ASROFUL ANAM', 'M. RAFFA ZEIN', 'M. RASSYA ADZIKRA', 'MAHADAYA BISMA PUTRA NUR ISTANTO',
+    'MAHESA ALIF QUROTA AYUN', 'MERI MARLIANA', 'MUCH ULINNUHA', 'MUHAMAD AVISENNA',
+    'MUHAMAD FADIL ARMAN', 'MUHAMMAD RAFLI', 'MUHAMMAD ADIEB ASSHULTHONI', 'MUHAMMAD AGASTYA DHAFA',
+    'MUHAMMAD AMMAR FIRJATULLAH', 'MUHAMMAD DAVIN ALFIANSYAH', 'MUHAMMAD DIAS IBRAHIM',
+    'MUHAMMAD DZAKKI RAMASYAH', 'MUHAMMAD FAIQ HAIDAR', 'MUHAMMAD HAFADZA ALGHIFARY',
+    'MUHAMMAD HARY ADI SYAPUTRA PURBA', 'MUHAMMAD HATRAS', 'MUHAMMAD KHAIDAR ALI',
+    'NARASHEVA MAHARDIKA', 'NAUFAL ARAFIF APRILIAN', 'NAUFAL KHOIRUDIN', 'NAYLA AULIA BERLIANA LUKMAN',
+    'NAZWA HANIDA', 'NURWAHYU UMBARA', 'PANDU ALFIAN EZRA', 'PAULUS SADHANA KUS DANANG MUSTIKO',
+    'PUTRI ANDINI', 'PUTRI APRILIA', 'RADIF MUHAMMAD SALMAN', 'RADJA PUTRA AKMAL MALIKI',
+    'RAFID DAFFA ABIYYU', 'RANDY ARYANTO', 'REIHAN FADHILAH', 'RENDY ARJIYADI SAPUTRA',
+    'RESTU PRANANDA ADITIYA', 'REVALDO', 'REYHAN ADLI DZAKI HAVILA', 'REYHAN KURNIAWAN',
+    'RIFKY AL GHOZALI', 'RIFQI KHOERUS SAFI', 'RISKI SURYA PRATAMA', 'RIZQI MAULANA',
+    'SINDI YANI', 'TARUNA', 'TEGGAR RAMADHAN', 'TRI SETYANI ANINDITA', 'USAMAH', 'VAREL MAULANA',
+    'WAHYU AJI SASONGKO', 'ZICO BRILIYAN ANDREANO'
 ]
 
 # Styling CSS Kustom: Tema iPhone Glassmorphism Premium (Maroon & Gold Elegan)
@@ -204,10 +132,16 @@ st.markdown("""
 # Form Input Nilai
 st.markdown('<div class="apple-glass-card">', unsafe_allow_html=True)
 st.markdown("<div style='font-size: 1.2rem; font-weight: 700; color: #ffffff; margin-bottom: 6px;'>📝 Form Capaian Tes Fisik</div>", unsafe_allow_html=True)
-st.markdown("<p style='font-size: 0.85rem; color: rgba(255,255,255,0.7); margin-bottom: 20px;'>Pilih mahasiswa, tentukan jenis kelamin, lalu masukkan angka capaian.</p>", unsafe_allow_html=True)
+st.markdown("<p style='font-size: 0.85rem; color: rgba(255,255,255,0.7); margin-bottom: 20px;'>Pilih nama dari daftar atau ketik/edit langsung untuk menyesuaikan dengan spreadsheet.</p>", unsafe_allow_html=True)
 
 with st.form("manual_input_form"):
-    selected_nama = st.selectbox("Pilih / Cari Nama Mahasiswa", options=MAHASISWA_LIST)
+    # Menggunakan st.selectbox untuk memilih, tapi kita sediakan text input agar bisa diedit jika ada yang kurang pas
+    pilihan_nama = st.selectbox("1. Pilih Nama Mahasiswa dari Daftar", options=["-- Pilih Manual / Ketik Sendiri --"] + MAHASISWA_LIST)
+    
+    # Kotak teks untuk mengedit atau mengetik langsung nama jika berbeda
+    default_val = "" if pilihan_nama == "-- Pilih Manual / Ketik Sendiri --" else pilihan_nama
+    selected_nama = st.text_input("2. Konfirmasi / Edit Nama (Pastikan sama persis dengan Spreadsheet)", value=default_val)
+
     jk = st.radio("Jenis Kelamin", options=["Laki-laki (L)", "Perempuan (P)"], horizontal=True)
     
     c1, c2 = st.columns(2)
@@ -229,8 +163,8 @@ with st.form("manual_input_form"):
     submitted = st.form_submit_button("✨ HITUNG & SIMPAN KE DATABASE")
     
     if submitted:
-        if selected_nama == "- Pilih Nama Mahasiswa -":
-            st.error("⚠️ Silakan pilih nama mahasiswa terlebih dahulu!")
+        if not selected_nama or selected_nama.strip() == "":
+            st.error("⚠️ Nama mahasiswa tidak boleh kosong! Silakan pilih atau ketik namanya.")
         else:
             with st.spinner("⏳ Menghitung nilai konversi & mengirim ke spreadsheet..."):
                 try:
@@ -290,7 +224,7 @@ with st.form("manual_input_form"):
                         elif capaian_shuttle <= 22.0: shuttle_score = 50
 
                     payload = {
-                        "nama": selected_nama,
+                        "nama": selected_nama.strip().upper(),
                         "tb": input_tb,
                         "bb": input_bb,
                         "bleep": bleep_score,
@@ -306,7 +240,7 @@ with st.form("manual_input_form"):
                     if res_data.get("status") == "success":
                         st.success(
                             f"🎉 Berhasil! Konversi nilai tersimpan di baris ke-{res_data.get('row')} "
-                            f"untuk **{selected_nama}**:\n\n"
+                            f"untuk **{selected_nama.strip()}**:\n\n"
                             f"- Bleep Test ➔ **{bleep_score}**\n"
                             f"- Pull/Chinning ➔ **{pull_score}**\n"
                             f"- Sit-Up ➔ **{sit_score}**\n"
