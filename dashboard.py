@@ -60,7 +60,6 @@ data_master = [
     {"Nama": "FAJAR RISKI", "Gender": "Laki-laki (L)", "Bleep": 45, "Pull": 50, "Sit": 50, "Push": 50, "Shuttle": 63, "Rata_rata": 51.6, "Kategori": "Kurang (<55)", "Status": "Hadir"},
     {"Nama": "TARUNA", "Gender": "Laki-laki (L)", "Bleep": 42, "Pull": 50, "Sit": 50, "Push": 50, "Shuttle": 50, "Rata_rata": 48.4, "Kategori": "Kurang (<55)", "Status": "Hadir"},
     {"Nama": "USAMAH", "Gender": "Laki-laki (L)", "Bleep": 44, "Pull": 50, "Sit": 50, "Push": 50, "Shuttle": 50, "Rata_rata": 48.8, "Kategori": "Kurang (<55)", "Status": "Hadir"},
-    # Mahasiswa Berhalangan / Sakit (Sesuai Spreadsheet Riil)
     {"Nama": "MERI MARLIANA", "Gender": "Perempuan (P)", "Bleep": 0, "Pull": 0, "Sit": 0, "Push": 0, "Shuttle": 0, "Rata_rata": 0, "Kategori": "Berhalangan", "Status": "Sakit", "Keterangan": "Surat Dokter (Istirahat)"},
     {"Nama": "MUHAMMAD ADIEB ASSHULTHONI", "Gender": "Laki-laki (L)", "Bleep": 0, "Pull": 0, "Sit": 0, "Push": 0, "Shuttle": 0, "Rata_rata": 0, "Kategori": "Berhalangan", "Status": "Sakit", "Keterangan": "Surat Dokter"},
     {"Nama": "MUHAMMAD HARY ADI SYAPUTRA PURBA", "Gender": "Laki-laki (L)", "Bleep": 0, "Pull": 0, "Sit": 0, "Push": 0, "Shuttle": 0, "Rata_rata": 0, "Kategori": "Berhalangan", "Status": "Sakit", "Keterangan": "Izin Medis"}
@@ -151,66 +150,43 @@ if filter_gender == "Semua Gender" and filter_kategori == "Semua Kategori":
     st.markdown('</div>', unsafe_allow_html=True)
 
 else:
-    # JIKA FILTER DIAKTIFKAN, TAMPILKAN HASIL FILTER & PERINGKAT 1-3 SESUAI FILTER (TIDAK DOBEL DENGAN PODIUM UTAMA)
+    # JIKA FILTER DIAKTIFKAN, TAMPILKAN HANYA LIST PERINGKAT 1-3 (TANPA TABEL LAGI)
     st.markdown('<div class="iphone-glass-card">', unsafe_allow_html=True)
     st.markdown(f"<h4 style='color: #ffd700; font-weight: 700; margin-bottom: 5px;'>🔍 Hasil Filter Aktif: {filter_gender} | {filter_kategori}</h4>", unsafe_allow_html=True)
-    st.markdown("<p style='font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-bottom: 15px;'>Daftar mahasiswa dan peringkat teratas berdasarkan pilihan filter.</p>", unsafe_allow_html=True)
+    st.markdown("<p style='font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-bottom: 15px;'>Daftar peringkat mahasiswa berdasarkan pilihan filter.</p>", unsafe_allow_html=True)
 
     if df_filtered.empty:
         st.warning("⚠️ Tidak ada data mahasiswa yang ditemukan dengan kombinasi filter tersebut.")
     else:
         df_sorted = df_filtered.sort_values(by='Rata_rata', ascending=False).reset_index(drop=True)
         
-        col_res1, col_res2 = st.columns([1.2, 2])
-        with col_res1:
-            st.markdown("##### 🏅 Peringkat 1 - 3 Sesuai Filter")
-            for idx, row in df_sorted.head(3).iterrows():
-                medali = ["👑", "🥈", "🥉"][idx]
-                st.markdown(f"""
-                    <div style='background: rgba(255,215,0,0.1); border: 1px solid rgba(212,175,55,0.4); border-radius: 12px; padding: 12px; margin-bottom: 10px;'>
-                        <b>{medali} Peringkat {idx+1}: {row['Nama']}</b><br>
-                        <span style='color: #ffd700; font-size: 0.85rem;'>Skor Rata-rata: {row['Rata_rata']} ({row['Gender']})</span>
-                    </div>
-                """, unsafe_allow_html=True)
-                
-        with col_res2:
-            st.markdown("##### 📋 Daftar Lengkap Mahasiswa Terfilter")
-            st.dataframe(df_sorted[['Nama', 'Gender', 'Rata_rata', 'Kategori']], use_container_width=True, hide_index=True)
+        # Menampilkan hanya daftar peringkat 1 sampai 3 (atau sebanyak data yang ada jika kurang dari 3)
+        for idx, row in df_sorted.head(3).iterrows():
+            medali = ["👑", "🥈", "🥉"][idx]
+            st.markdown(f"""
+                <div style='background: rgba(255,215,0,0.1); border: 1px solid rgba(212,175,55,0.4); border-radius: 14px; padding: 14px; margin-bottom: 12px;'>
+                    <b>{medali} Peringkat {idx+1}: {row['Nama']}</b><br>
+                    <span style='color: #ffd700; font-size: 0.9rem;'>Skor Rata-rata: {row['Rata_rata']} | Gender: {row['Gender']} | Kategori: {row['Kategori']}</span>
+                </div>
+            """, unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
-# --- RADAR CHART CANGGIH DENGAN FUNGSI ANALISIS PERBANDINGAN ---
+# --- RADAR CHART & BAR CHART ---
 col_r1, col_r2 = st.columns(2)
 with col_r1:
     st.markdown('<div class="iphone-glass-card">', unsafe_allow_html=True)
     st.markdown("<h4 style='color: #ffffff; font-weight: 700; margin-bottom: 5px;'>🕸️ Profil Kebugaran Jasmani Lanjutan (Radar Chart)</h4>", unsafe_allow_html=True)
-    st.markdown("<p style='font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-bottom: 15px;'>Analisis perbandingan profil kemampuan antar komponen tes fisik.</p>", unsafe_allow_html=True)
-
     categories = ['Bleep Test', 'Pull-Up', 'Sit-Up', 'Push-Up', 'Shuttle Run']
     scores_avg = [82.5, 74.0, 85.5, 79.0, 80.2]
     scores_target = [85.0, 80.0, 85.0, 80.0, 85.0]
 
     fig_radar = go.Figure()
-    fig_radar.add_trace(go.Scatterpolar(
-        r=scores_avg, theta=categories, fill='toself',
-        name='Rata-rata Aktual Angkatan',
-        fillcolor='rgba(212, 175, 55, 0.3)',
-        line=dict(color='#ffd700', width=3)
-    ))
-    fig_radar.add_trace(go.Scatterpolar(
-        r=scores_target, theta=categories, fill='none',
-        name='Target Standar Minimum',
-        line=dict(color='#60a5fa', width=2, dash='dot')
-    ))
+    fig_radar.add_trace(go.Scatterpolar(r=scores_avg, theta=categories, fill='toself', name='Rata-rata Aktual Angkatan', fillcolor='rgba(212, 175, 55, 0.3)', line=dict(color='#ffd700', width=3)))
+    fig_radar.add_trace(go.Scatterpolar(r=scores_target, theta=categories, fill='none', name='Target Standar Minimum', line=dict(color='#60a5fa', width=2, dash='dot')))
     fig_radar.update_layout(
-        polar=dict(
-            radialaxis=dict(visible=True, range=[0, 100], color='rgba(255,255,255,0.6)', gridcolor='rgba(255,255,255,0.1)'),
-            angularaxis=dict(color='white', gridcolor='rgba(255,255,255,0.1)')
-        ),
-        paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
-        font=dict(color='white', family='Plus Jakarta Sans'),
-        legend=dict(orientation="h", yanchor="bottom", y=-0.25, xanchor="center", x=0.5),
-        margin=dict(t=20, b=30, l=20, r=20),
-        height=320
+        polar=dict(radialaxis=dict(visible=True, range=[0, 100], color='rgba(255,255,255,0.6)', gridcolor='rgba(255,255,255,0.1)'), angularaxis=dict(color='white', gridcolor='rgba(255,255,255,0.1)')),
+        paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', font=dict(color='white', family='Plus Jakarta Sans'),
+        legend=dict(orientation="h", yanchor="bottom", y=-0.25, xanchor="center", x=0.5), margin=dict(t=20, b=30, l=20, r=20), height=320
     )
     st.plotly_chart(fig_radar, use_container_width=True)
     st.markdown('</div>', unsafe_allow_html=True)
@@ -218,28 +194,16 @@ with col_r1:
 with col_r2:
     st.markdown('<div class="iphone-glass-card">', unsafe_allow_html=True)
     st.markdown("<h4 style='color: #ffffff; font-weight: 700; margin-bottom: 5px;'>📊 Perbandingan Skor per Item Tes</h4>", unsafe_allow_html=True)
-    st.markdown("<p style='font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-bottom: 15px;'>Evaluasi detail tingkat pencapaian tiap komponen tes jasmani.</p>", unsafe_allow_html=True)
-
     df_item = pd.DataFrame({'Item Tes': ['Bleep Test', 'Pull-Up', 'Sit-Up', 'Push-Up', 'Shuttle Run'], 'Skor': [82.5, 74.0, 85.5, 79.0, 80.2]})
     fig_bar = px.bar(df_item, x='Item Tes', y='Skor', text='Skor', color='Skor', color_continuous_scale=['#b91c1c', '#f59e0b', '#ffd700'])
-    fig_bar.update_layout(
-        paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
-        font=dict(color='white', family='Plus Jakarta Sans'),
-        coloraxis_showscale=False,
-        xaxis=dict(title='', showgrid=False),
-        yaxis=dict(title='Skor Rata-rata', showgrid=True, gridcolor='rgba(255,255,255,0.1)'),
-        margin=dict(t=10, b=10, l=10, r=10),
-        height=320
-    )
+    fig_bar.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', font=dict(color='white', family='Plus Jakarta Sans'), coloraxis_showscale=False, xaxis=dict(title='', showgrid=False), yaxis=dict(title='Skor Rata-rata', showgrid=True, gridcolor='rgba(255,255,255,0.1)'), margin=dict(t=10, b=10, l=10, r=10), height=320)
     fig_bar.update_traces(texttemplate='%{text:.1f}', textposition='outside', marker=dict(cornerradius=8))
     st.plotly_chart(fig_bar, use_container_width=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
-# --- TABEL MAHASISWA BERHALANGAN (SESUAI SPREADSHEET RIIL) ---
+# --- TABEL MAHASISWA BERHALANGAN ---
 st.markdown('<div class="iphone-glass-card">', unsafe_allow_html=True)
 st.markdown("<h4 style='color: #60a5fa; font-weight: 700; margin-bottom: 5px;'>🏥 Daftar Mahasiswa Berhalangan (Sakit / Izin)</h4>", unsafe_allow_html=True)
-st.markdown("<p style='font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-bottom: 20px;'>Daftar mahasiswa yang tidak mengikuti tes fisik berdasarkan data aktual spreadsheet.</p>", unsafe_allow_html=True)
-
 df_sakit_aktual = df_master[df_master['Status'] == 'Sakit'].reset_index(drop=True)
 df_sakit_aktual.index = df_sakit_aktual.index + 1
 st.dataframe(df_sakit_aktual[['Nama', 'Gender', 'Status', 'Keterangan']].rename(columns={'Nama': 'Nama Mahasiswa'}), use_container_width=True)
