@@ -15,15 +15,7 @@ st.markdown("""
         border: 1px solid rgba(255, 255, 255, 0.12); border-top: 1px solid rgba(255, 255, 255, 0.3);
         border-radius: 28px; padding: 28px; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6); margin-bottom: 24px;
     }
-    .app-header { text-align: center; padding: 20px 0 30px 0; }
-    .akti-logo-ring {
-        width: 95px; height: 95px; background: rgba(255, 255, 255, 0.95);
-        border: 2px solid rgba(212, 175, 55, 0.8); border-radius: 50%; display: flex; align-items: center; justify-content: center;
-        box-shadow: 0 0 25px rgba(212, 175, 55, 0.4); margin: 0 auto 15px auto; overflow: hidden; padding: 5px;
-    }
-    .akti-logo-ring img {
-        width: 100%; height: 100%; object-fit: contain; border-radius: 50%;
-    }
+    .app-header { text-align: center; padding: 10px 0 25px 0; }
     .akti-badge {
         display: inline-block; background: linear-gradient(135deg, rgba(212, 175, 55, 0.25), rgba(255, 215, 0, 0.05));
         border: 1px solid rgba(212, 175, 55, 0.6); color: #ffd700; padding: 6px 20px; border-radius: 50px;
@@ -43,14 +35,16 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# URL Logo AKTI (Menggunakan link gambar langsung atau asset publik)
-LOGO_URL = "https://i.ibb.co.com/6c975g7J/WhatsApp-Image-2026-02-10-at-08-44-23-2.jpg"
+# Tampilan Logo Terpusat Rapi
+col_l1, col_l2, col_l3 = st.columns([5, 1, 5])
+with col_l2:
+    try:
+        st.image("logo.jpg", use_container_width=True)
+    except:
+        st.markdown("<div style='text-align:center; font-size: 50px;'>🛡️</div>", unsafe_allow_html=True)
 
-st.markdown(f"""
+st.markdown("""
     <div class="app-header">
-        <div class="akti-logo-ring">
-            <img src="{LOGO_URL}" alt="Logo AKTI">
-        </div>
         <div class="akti-badge">AKADEMI KOMUNITAS TOYOTA INDONESIA</div>
         <div class="app-title">Dashboard Eksekutif & Evaluasi Tes Fisik</div>
         <div class="app-subtitle">Analisis Kinerja Jasmani Mahasiswa Angkatan A11 • Standar Manajemen Mutu</div>
@@ -143,7 +137,7 @@ with col_g2:
     st.plotly_chart(fig_gauge, use_container_width=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
-# --- KONDISI TAMPILAN: JIKA FILTER TIDAK DIPILIH (DEFAULT), TAMPILKAN PODIUM UTAMA ---
+# --- KONDISI TAMPILAN: PODIUM UTAMA ATAU HASIL FILTER ---
 if filter_gender == "Semua Gender" and filter_kategori == "Semua Kategori":
     st.markdown('<div class="iphone-glass-card">', unsafe_allow_html=True)
     st.markdown("<h4 style='color: #ffd700; font-weight: 700; margin-bottom: 5px;'>🏆 Podium Top 3 Mahasiswa Berprestasi Jasmani (Keseluruhan)</h4>", unsafe_allow_html=True)
@@ -215,7 +209,7 @@ df_sakit_aktual.index = df_sakit_aktual.index + 1
 st.dataframe(df_sakit_aktual[['Nama', 'Gender', 'Status', 'Keterangan']].rename(columns={'Nama': 'Nama Mahasiswa'}), use_container_width=True)
 st.markdown('</div>', unsafe_allow_html=True)
 
-# --- TABEL MAHASISWA MEMBUTUHKAN PENDAMPINGAN KHUSUS (KURANG <55) ---
+# --- TABEL MAHASISWA MEMBUTUHKAN PENDAMPINGAN KHUSUS ---
 st.markdown('<div class="iphone-glass-card">', unsafe_allow_html=True)
 st.markdown("<h4 style='color: #f87171; font-weight: 700; margin-bottom: 5px;'>🚨 Daftar Mahasiswa Membutuhkan Pendampingan Khusus (Skor Kurang <55)</h4>", unsafe_allow_html=True)
 df_perhatian_aktual = df_master[df_master['Kategori'] == 'Kurang (<55)'].reset_index(drop=True)
