@@ -17,9 +17,12 @@ st.markdown("""
     }
     .app-header { text-align: center; padding: 20px 0 30px 0; }
     .akti-logo-ring {
-        width: 85px; height: 85px; background: radial-gradient(circle, rgba(255,215,0,0.15) 0%, rgba(255,255,255,0.05) 100%);
-        border: 2px solid rgba(212, 175, 55, 0.6); border-radius: 50%; display: flex; align-items: center; justify-content: center;
-        box-shadow: 0 0 25px rgba(212, 175, 55, 0.3); margin: 0 auto 15px auto;
+        width: 95px; height: 95px; background: rgba(255, 255, 255, 0.95);
+        border: 2px solid rgba(212, 175, 55, 0.8); border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        box-shadow: 0 0 25px rgba(212, 175, 55, 0.4); margin: 0 auto 15px auto; overflow: hidden; padding: 5px;
+    }
+    .akti-logo-ring img {
+        width: 100%; height: 100%; object-fit: contain; border-radius: 50%;
     }
     .akti-badge {
         display: inline-block; background: linear-gradient(135deg, rgba(212, 175, 55, 0.25), rgba(255, 215, 0, 0.05));
@@ -40,9 +43,14 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-st.markdown("""
+# URL Logo AKTI (Menggunakan link gambar langsung atau asset publik)
+LOGO_URL = "https://i.ibb.co.com/6c975g7J/WhatsApp-Image-2026-02-10-at-08-44-23-2.jpg"
+
+st.markdown(f"""
     <div class="app-header">
-        <div class="akti-logo-ring"><span style="font-size: 28px;">🛡️</span></div>
+        <div class="akti-logo-ring">
+            <img src="{LOGO_URL}" alt="Logo AKTI">
+        </div>
         <div class="akti-badge">AKADEMI KOMUNITAS TOYOTA INDONESIA</div>
         <div class="app-title">Dashboard Eksekutif & Evaluasi Tes Fisik</div>
         <div class="app-subtitle">Analisis Kinerja Jasmani Mahasiswa Angkatan A11 • Standar Manajemen Mutu</div>
@@ -80,7 +88,7 @@ with col_f3:
         st.toast("Data analitik berhasil disinkronkan!", icon="✨")
 st.markdown('</div>', unsafe_allow_html=True)
 
-# Logika Pemfilteran Data yang Disempurnakan
+# Logika Pemfilteran Data
 df_filtered = df_master[df_master['Status'] == 'Hadir']
 if filter_gender != "Semua Gender":
     df_filtered = df_filtered[df_filtered['Gender'] == filter_gender]
@@ -151,7 +159,6 @@ if filter_gender == "Semua Gender" and filter_kategori == "Semua Kategori":
     st.markdown('</div>', unsafe_allow_html=True)
 
 else:
-    # JIKA FILTER DIAKTIFKAN, TAMPILKAN HASIL FILTER & PERINGKAT BERDASARKAN FILTER
     st.markdown('<div class="iphone-glass-card">', unsafe_allow_html=True)
     st.markdown(f"<h4 style='color: #ffd700; font-weight: 700; margin-bottom: 5px;'>🔍 Hasil Filter Aktif: {filter_gender} | {filter_kategori}</h4>", unsafe_allow_html=True)
     st.markdown("<p style='font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-bottom: 15px;'>Daftar peringkat mahasiswa berdasarkan pilihan filter.</p>", unsafe_allow_html=True)
@@ -160,7 +167,6 @@ else:
         st.warning("⚠️ Tidak ada data mahasiswa yang ditemukan dengan kombinasi filter tersebut.")
     else:
         df_sorted = df_filtered.sort_values(by='Rata_rata', ascending=False).reset_index(drop=True)
-        
         for idx, row in df_sorted.head(3).iterrows():
             medali = ["👑", "🥈", "🥉"][idx]
             st.markdown(f"""
@@ -201,7 +207,7 @@ with col_r2:
     st.plotly_chart(fig_bar, use_container_width=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
-# --- TABEL MAHASISWA BERHALANGAN (SAKIT/IZIN) ---
+# --- TABEL MAHASISWA BERHALANGAN ---
 st.markdown('<div class="iphone-glass-card">', unsafe_allow_html=True)
 st.markdown("<h4 style='color: #60a5fa; font-weight: 700; margin-bottom: 5px;'>🏥 Daftar Mahasiswa Berhalangan (Sakit / Izin)</h4>", unsafe_allow_html=True)
 df_sakit_aktual = df_master[df_master['Status'] == 'Sakit'].reset_index(drop=True)
@@ -212,8 +218,6 @@ st.markdown('</div>', unsafe_allow_html=True)
 # --- TABEL MAHASISWA MEMBUTUHKAN PENDAMPINGAN KHUSUS (KURANG <55) ---
 st.markdown('<div class="iphone-glass-card">', unsafe_allow_html=True)
 st.markdown("<h4 style='color: #f87171; font-weight: 700; margin-bottom: 5px;'>🚨 Daftar Mahasiswa Membutuhkan Pendampingan Khusus (Skor Kurang <55)</h4>", unsafe_allow_html=True)
-st.markdown("<p style='font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-bottom: 20px;'>Daftar mahasiswa yang masuk dalam kategori Kurang dan memerlukan bimbingan khusus.</p>", unsafe_allow_html=True)
-
 df_perhatian_aktual = df_master[df_master['Kategori'] == 'Kurang (<55)'].reset_index(drop=True)
 df_perhatian_aktual.index = df_perhatian_aktual.index + 1
 st.dataframe(df_perhatian_aktual[['Nama', 'Gender', 'Rata_rata']].rename(columns={'Nama': 'Nama Mahasiswa', 'Rata_rata': 'Nilai Rata-rata'}), use_container_width=True)
