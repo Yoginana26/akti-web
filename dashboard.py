@@ -49,8 +49,7 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# --- SIMULASI DATA MASTER MAHASISWA & SPREADSHEET ---
-# Data mencakup nilai riil sesuai spreadsheet Anda (termasuk status Sakit dan nilai per item)
+# Data Master Riil Sesuai Spreadsheet
 data_master = [
     {"Nama": "AGUS SINATRIYA", "Gender": "Laki-laki (L)", "Bleep": 95, "Pull": 100, "Sit": 100, "Push": 100, "Shuttle": 98, "Rata_rata": 98.2, "Kategori": "Sangat Bagus (86-100)", "Status": "Hadir"},
     {"Nama": "AFFAN HIDAYATUR RAKHMAN", "Gender": "Laki-laki (L)", "Bleep": 92, "Pull": 100, "Sit": 98, "Push": 95, "Shuttle": 92, "Rata_rata": 95.4, "Kategori": "Sangat Bagus (86-100)", "Status": "Hadir"},
@@ -61,7 +60,7 @@ data_master = [
     {"Nama": "FAJAR RISKI", "Gender": "Laki-laki (L)", "Bleep": 45, "Pull": 50, "Sit": 50, "Push": 50, "Shuttle": 63, "Rata_rata": 51.6, "Kategori": "Kurang (<55)", "Status": "Hadir"},
     {"Nama": "TARUNA", "Gender": "Laki-laki (L)", "Bleep": 42, "Pull": 50, "Sit": 50, "Push": 50, "Shuttle": 50, "Rata_rata": 48.4, "Kategori": "Kurang (<55)", "Status": "Hadir"},
     {"Nama": "USAMAH", "Gender": "Laki-laki (L)", "Bleep": 44, "Pull": 50, "Sit": 50, "Push": 50, "Shuttle": 50, "Rata_rata": 48.8, "Kategori": "Kurang (<55)", "Status": "Hadir"},
-    # Mahasiswa Berhalangan (Sakit sesuai spreadsheet Anda)
+    # Mahasiswa Berhalangan / Sakit (Sesuai Spreadsheet Riil)
     {"Nama": "MERI MARLIANA", "Gender": "Perempuan (P)", "Bleep": 0, "Pull": 0, "Sit": 0, "Push": 0, "Shuttle": 0, "Rata_rata": 0, "Kategori": "Berhalangan", "Status": "Sakit", "Keterangan": "Surat Dokter (Istirahat)"},
     {"Nama": "MUHAMMAD ADIEB ASSHULTHONI", "Gender": "Laki-laki (L)", "Bleep": 0, "Pull": 0, "Sit": 0, "Push": 0, "Shuttle": 0, "Rata_rata": 0, "Kategori": "Berhalangan", "Status": "Sakit", "Keterangan": "Surat Dokter"},
     {"Nama": "MUHAMMAD HARY ADI SYAPUTRA PURBA", "Gender": "Laki-laki (L)", "Bleep": 0, "Pull": 0, "Sit": 0, "Push": 0, "Shuttle": 0, "Rata_rata": 0, "Kategori": "Berhalangan", "Status": "Sakit", "Keterangan": "Izin Medis"}
@@ -81,42 +80,14 @@ with col_f3:
         st.toast("Data analitik berhasil disinkronkan!", icon="✨")
 st.markdown('</div>', unsafe_allow_html=True)
 
-# Logika Pemfilteran Data Sesuai Pilihan User
+# Logika Pemfilteran Data
 df_filtered = df_master[df_master['Status'] == 'Hadir']
 if filter_gender != "Semua Gender":
     df_filtered = df_filtered[df_filtered['Gender'] == filter_gender]
 if filter_kategori != "Semua Kategori":
     df_filtered = df_filtered[df_filtered['Kategori'] == filter_kategori]
 
-# --- TAMPILAN HASIL FILTER (NAMA & PERINGKAT 1, 2, 3 BERDASARKAN FILTER) ---
-st.markdown('<div class="iphone-glass-card">', unsafe_allow_html=True)
-st.markdown(f"<h4 style='color: #ffd700; font-weight: 700; margin-bottom: 5px;'>🔍 Hasil Filter: {filter_gender} | {filter_kategori}</h4>", unsafe_allow_html=True)
-st.markdown("<p style='font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-bottom: 15px;'>Daftar mahasiswa yang sesuai dengan kriteria filter beserta peringkat teratasnya.</p>", unsafe_allow_html=True)
-
-if df_filtered.empty:
-    st.warning("⚠️ Tidak ada data mahasiswa yang ditemukan dengan kriteria filter tersebut.")
-else:
-    # Urutkan berdasarkan nilai rata-rata tertinggi untuk menentukan peringkat
-    df_sorted = df_filtered.sort_values(by='Rata_rata', ascending=False).reset_index(drop=True)
-    
-    col_res1, col_res2 = st.columns([1.2, 2])
-    with col_res1:
-        st.markdown("##### 🏅 Peringkat 1 - 3 (Berdasarkan Filter)")
-        for idx, row in df_sorted.head(3).iterrows():
-            medali = ["👑", "🥈", "🥉"][idx]
-            st.markdown(f"""
-                <div style='background: rgba(255,215,0,0.1); border: 1px solid rgba(212,175,55,0.4); border-radius: 12px; padding: 10px; margin-bottom: 8px;'>
-                    <b>{medali} Peringkat {idx+1}: {row['Nama']}</b><br>
-                    <span style='color: #ffd700; font-size: 0.85rem;'>Skor Rata-rata: {row['Rata_rata']} ({row['Gender']})</span>
-                </div>
-            """, unsafe_allow_html=True)
-            
-    with col_res2:
-        st.markdown("##### 📋 Daftar Mahasiswa dalam Kategori Ini")
-        st.dataframe(df_sorted[['Nama', 'Gender', 'Rata_rata', 'Kategori']], use_container_width=True, hide_index=True)
-st.markdown('</div>', unsafe_allow_html=True)
-
-# Kartu KPI
+# --- KARTU KPI EKSEKUTIF ---
 st.markdown('<div class="iphone-glass-card">', unsafe_allow_html=True)
 st.markdown("<h4 style='margin-bottom: 20px; color: #ffd700 !important; font-weight: 700;'>⚡ Ringkasan Metrik Utama Kebugaran Jasmani</h4>", unsafe_allow_html=True)
 kpi1, kpi2, kpi3, kpi4 = st.columns(4)
@@ -130,7 +101,7 @@ with kpi4:
     st.markdown("""<div class="metric-container"><p style='font-size: 0.8rem; color: rgba(255,255,255,0.6); margin-bottom: 5px; text-transform: uppercase;'>Perhatian Khusus</p><h2 style='color: #f87171; font-weight: 800; margin: 0;'>6 Siswa</h2><span style='font-size: 0.75rem; color: #f87171;'>▼ Prioritas Bimbingan</span></div>""", unsafe_allow_html=True)
 st.markdown('</div>', unsafe_allow_html=True)
 
-# Visualisasi Utama (Donut & Gauge)
+# --- VISUALISASI UTAMA (Donut & Gauge Bebas Error Color) ---
 col_g1, col_g2 = st.columns(2)
 with col_g1:
     st.markdown('<div class="iphone-glass-card">', unsafe_allow_html=True)
@@ -151,13 +122,45 @@ with col_g2:
         gauge = {
             'axis': {'range': [0, 100], 'tickcolor': "white"}, 'bar': {'color': "#ffd700"},
             'bgcolor': "rgba(255,255,255,0.05)", 'borderwidth': 2, 'bordercolor': "rgba(255,255,255,0.2)",
-            'steps': [{'range': [0, 55], 'color': 'rgba(239, 68, 68, 0.4)'}, {'range': [55, 70], 'color': 'rgba(59, 130, 246, 0.4)'}, {'range': [70, 85], 'color': 'rgba(245, 158, 11, 0.4)'}, {'range': [85, 100], 'color': 'rgba(255, 215, 0, 0.4)}'}],
+            'steps': [
+                {'range': [0, 55], 'color': '#ef4444'}, 
+                {'range': [55, 70], 'color': '#3b82f6'}, 
+                {'range': [70, 85], 'color': '#f59e0b'}, 
+                {'range': [85, 100], 'color': '#ffd700'}
+            ],
             'threshold': {'line': {'color': "white", 'width': 4}, 'thickness': 0.75, 'value': 75.0}
         }
     ))
     fig_gauge.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', font=dict(color='white', family='Plus Jakarta Sans'), margin=dict(t=20, b=20, l=20, r=20), height=270)
     st.plotly_chart(fig_gauge, use_container_width=True)
     st.markdown('</div>', unsafe_allow_html=True)
+
+# --- BAGIAN HASIL FILTER INTERAKTIF (NAMA & PERINGKAT 1, 2, 3) ---
+st.markdown('<div class="iphone-glass-card">', unsafe_allow_html=True)
+st.markdown(f"<h4 style='color: #ffd700; font-weight: 700; margin-bottom: 5px;'>🔍 Hasil Filter Aktif: {filter_gender} | {filter_kategori}</h4>", unsafe_allow_html=True)
+st.markdown("<p style='font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-bottom: 15px;'>Daftar mahasiswa dan peringkat berdasarkan pilihan filter di atas.</p>", unsafe_allow_html=True)
+
+if df_filtered.empty:
+    st.warning("⚠️ Tidak ada data mahasiswa yang ditemukan dengan kombinasi filter tersebut.")
+else:
+    df_sorted = df_filtered.sort_values(by='Rata_rata', ascending=False).reset_index(drop=True)
+    
+    col_res1, col_res2 = st.columns([1.2, 2])
+    with col_res1:
+        st.markdown("##### 🏅 Peringkat 1 - 3 Sesuai Filter")
+        for idx, row in df_sorted.head(3).iterrows():
+            medali = ["👑", "🥈", "🥉"][idx]
+            st.markdown(f"""
+                <div style='background: rgba(255,215,0,0.1); border: 1px solid rgba(212,175,55,0.4); border-radius: 12px; padding: 12px; margin-bottom: 10px;'>
+                    <b>{medali} Peringkat {idx+1}: {row['Nama']}</b><br>
+                    <span style='color: #ffd700; font-size: 0.85rem;'>Skor Rata-rata: {row['Rata_rata']} ({row['Gender']})</span>
+                </div>
+            """, unsafe_allow_html=True)
+            
+    with col_res2:
+        st.markdown("##### 📋 Daftar Lengkap Mahasiswa Terfilter")
+        st.dataframe(df_sorted[['Nama', 'Gender', 'Rata_rata', 'Kategori']], use_container_width=True, hide_index=True)
+st.markdown('</div>', unsafe_allow_html=True)
 
 # --- RADAR CHART CANGGIH DENGAN FUNGSI ANALISIS PERBANDINGAN ---
 col_r1, col_r2 = st.columns(2)
@@ -168,7 +171,7 @@ with col_r1:
 
     categories = ['Bleep Test', 'Pull-Up', 'Sit-Up', 'Push-Up', 'Shuttle Run']
     scores_avg = [82.5, 74.0, 85.5, 79.0, 80.2]
-    scores_target = [85.0, 80.0, 85.0, 80.0, 85.0]  # Garis Target Standar Institusi
+    scores_target = [85.0, 80.0, 85.0, 80.0, 85.0]
 
     fig_radar = go.Figure()
     fig_radar.add_trace(go.Scatterpolar(
@@ -185,7 +188,7 @@ with col_r1:
     fig_radar.update_layout(
         polar=dict(
             radialaxis=dict(visible=True, range=[0, 100], color='rgba(255,255,255,0.6)', gridcolor='rgba(255,255,255,0.1)'),
-            angularaxis=dict(color='white', gridcolor='rgba(255,255,255,0.1)', tittle='')
+            angularaxis=dict(color='white', gridcolor='rgba(255,255,255,0.1)')
         ),
         paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
         font=dict(color='white', family='Plus Jakarta Sans'),
@@ -223,9 +226,7 @@ st.markdown("<p style='font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-
 
 df_sakit_aktual = df_master[df_master['Status'] == 'Sakit'].reset_index(drop=True)
 df_sakit_aktual.index = df_sakit_aktual.index + 1
-df_sakit_display = df_sakit_aktual[['Nama', 'Gender', 'Status', 'Keterangan']].rename_columns = df_sakit_aktual.rename(columns={'Nama': 'Nama Mahasiswa'})
-
-st.dataframe(df_sakit_aktual[['Nama', 'Gender', 'Status', 'Keterangan']], use_container_width=True)
+st.dataframe(df_sakit_aktual[['Nama', 'Gender', 'Status', 'Keterangan']].rename(columns={'Nama': 'Nama Mahasiswa'}), use_container_width=True)
 st.markdown('</div>', unsafe_allow_html=True)
 
 # Podium Top 3 Keseluruhan
