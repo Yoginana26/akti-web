@@ -101,7 +101,7 @@ with kpi4:
     st.markdown("""<div class="metric-container"><p style='font-size: 0.8rem; color: rgba(255,255,255,0.6); margin-bottom: 5px; text-transform: uppercase;'>Perhatian Khusus</p><h2 style='color: #f87171; font-weight: 800; margin: 0;'>6 Siswa</h2><span style='font-size: 0.75rem; color: #f87171;'>▼ Prioritas Bimbingan</span></div>""", unsafe_allow_html=True)
 st.markdown('</div>', unsafe_allow_html=True)
 
-# --- VISUALISASI UTAMA (Donut & Gauge Bebas Error Color) ---
+# --- VISUALISASI UTAMA (Donut & Gauge) ---
 col_g1, col_g2 = st.columns(2)
 with col_g1:
     st.markdown('<div class="iphone-glass-card">', unsafe_allow_html=True)
@@ -135,32 +135,48 @@ with col_g2:
     st.plotly_chart(fig_gauge, use_container_width=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
-# --- BAGIAN HASIL FILTER INTERAKTIF (NAMA & PERINGKAT 1, 2, 3) ---
-st.markdown('<div class="iphone-glass-card">', unsafe_allow_html=True)
-st.markdown(f"<h4 style='color: #ffd700; font-weight: 700; margin-bottom: 5px;'>🔍 Hasil Filter Aktif: {filter_gender} | {filter_kategori}</h4>", unsafe_allow_html=True)
-st.markdown("<p style='font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-bottom: 15px;'>Daftar mahasiswa dan peringkat berdasarkan pilihan filter di atas.</p>", unsafe_allow_html=True)
-
-if df_filtered.empty:
-    st.warning("⚠️ Tidak ada data mahasiswa yang ditemukan dengan kombinasi filter tersebut.")
-else:
-    df_sorted = df_filtered.sort_values(by='Rata_rata', ascending=False).reset_index(drop=True)
+# --- KONDISI TAMPILAN: JIKA FILTER TIDAK DIPILIH (DEFAULT), TAMPILKAN PODIUM UTAMA ---
+if filter_gender == "Semua Gender" and filter_kategori == "Semua Kategori":
+    st.markdown('<div class="iphone-glass-card">', unsafe_allow_html=True)
+    st.markdown("<h4 style='color: #ffd700; font-weight: 700; margin-bottom: 5px;'>🏆 Podium Top 3 Mahasiswa Berprestasi Jasmani (Keseluruhan)</h4>", unsafe_allow_html=True)
+    st.markdown("<p style='font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-bottom: 20px;'>Apresiasi bagi mahasiswa dengan skor rata-rata tertinggi di angkatan.</p>", unsafe_allow_html=True)
     
-    col_res1, col_res2 = st.columns([1.2, 2])
-    with col_res1:
-        st.markdown("##### 🏅 Peringkat 1 - 3 Sesuai Filter")
-        for idx, row in df_sorted.head(3).iterrows():
-            medali = ["👑", "🥈", "🥉"][idx]
-            st.markdown(f"""
-                <div style='background: rgba(255,215,0,0.1); border: 1px solid rgba(212,175,55,0.4); border-radius: 12px; padding: 12px; margin-bottom: 10px;'>
-                    <b>{medali} Peringkat {idx+1}: {row['Nama']}</b><br>
-                    <span style='color: #ffd700; font-size: 0.85rem;'>Skor Rata-rata: {row['Rata_rata']} ({row['Gender']})</span>
-                </div>
-            """, unsafe_allow_html=True)
-            
-    with col_res2:
-        st.markdown("##### 📋 Daftar Lengkap Mahasiswa Terfilter")
-        st.dataframe(df_sorted[['Nama', 'Gender', 'Rata_rata', 'Kategori']], use_container_width=True, hide_index=True)
-st.markdown('</div>', unsafe_allow_html=True)
+    p1, p2, p3 = st.columns(3)
+    with p1:
+        st.markdown("""<div class="podium-card"><span style='font-size: 28px;'>🥈</span><h3 style='margin: 5px 0 0 0; color: white;'>AFFAN HIDAYATUR</h3><p style='color: rgba(255,255,255,0.6); font-size: 0.8rem; margin: 0;'>Laki-laki (L)</p><h2 style='color: #ffd700; margin-top: 10px;'>95.4</h2></div>""", unsafe_allow_html=True)
+    with p2:
+        st.markdown("""<div class="podium-card" style='border: 2px solid #ffd700; background: linear-gradient(135deg, rgba(255,215,0,0.25), rgba(255,255,255,0.05));'><span style='font-size: 36px;'>👑</span><h3 style='margin: 5px 0 0 0; color: #ffd700;'>AGUS SINATRIYA</h3><p style='color: rgba(255,255,255,0.6); font-size: 0.8rem; margin: 0;'>Laki-laki (L)</p><h2 style='color: #ffd700; margin-top: 10px;'>98.2</h2></div>""", unsafe_allow_html=True)
+    with p3:
+        st.markdown("""<div class="podium-card"><span style='font-size: 28px;'>🥉</span><h3 style='margin: 5px 0 0 0; color: white;'>ADRIAN RIZKI</h3><p style='color: rgba(255,255,255,0.6); font-size: 0.8rem; margin: 0;'>Laki-laki (L)</p><h2 style='color: #ffd700; margin-top: 10px;'>94.0</h2></div>""", unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+
+else:
+    # JIKA FILTER DIAKTIFKAN, TAMPILKAN HASIL FILTER & PERINGKAT 1-3 SESUAI FILTER (TIDAK DOBEL DENGAN PODIUM UTAMA)
+    st.markdown('<div class="iphone-glass-card">', unsafe_allow_html=True)
+    st.markdown(f"<h4 style='color: #ffd700; font-weight: 700; margin-bottom: 5px;'>🔍 Hasil Filter Aktif: {filter_gender} | {filter_kategori}</h4>", unsafe_allow_html=True)
+    st.markdown("<p style='font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-bottom: 15px;'>Daftar mahasiswa dan peringkat teratas berdasarkan pilihan filter.</p>", unsafe_allow_html=True)
+
+    if df_filtered.empty:
+        st.warning("⚠️ Tidak ada data mahasiswa yang ditemukan dengan kombinasi filter tersebut.")
+    else:
+        df_sorted = df_filtered.sort_values(by='Rata_rata', ascending=False).reset_index(drop=True)
+        
+        col_res1, col_res2 = st.columns([1.2, 2])
+        with col_res1:
+            st.markdown("##### 🏅 Peringkat 1 - 3 Sesuai Filter")
+            for idx, row in df_sorted.head(3).iterrows():
+                medali = ["👑", "🥈", "🥉"][idx]
+                st.markdown(f"""
+                    <div style='background: rgba(255,215,0,0.1); border: 1px solid rgba(212,175,55,0.4); border-radius: 12px; padding: 12px; margin-bottom: 10px;'>
+                        <b>{medali} Peringkat {idx+1}: {row['Nama']}</b><br>
+                        <span style='color: #ffd700; font-size: 0.85rem;'>Skor Rata-rata: {row['Rata_rata']} ({row['Gender']})</span>
+                    </div>
+                """, unsafe_allow_html=True)
+                
+        with col_res2:
+            st.markdown("##### 📋 Daftar Lengkap Mahasiswa Terfilter")
+            st.dataframe(df_sorted[['Nama', 'Gender', 'Rata_rata', 'Kategori']], use_container_width=True, hide_index=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # --- RADAR CHART CANGGIH DENGAN FUNGSI ANALISIS PERBANDINGAN ---
 col_r1, col_r2 = st.columns(2)
@@ -227,16 +243,4 @@ st.markdown("<p style='font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-
 df_sakit_aktual = df_master[df_master['Status'] == 'Sakit'].reset_index(drop=True)
 df_sakit_aktual.index = df_sakit_aktual.index + 1
 st.dataframe(df_sakit_aktual[['Nama', 'Gender', 'Status', 'Keterangan']].rename(columns={'Nama': 'Nama Mahasiswa'}), use_container_width=True)
-st.markdown('</div>', unsafe_allow_html=True)
-
-# Podium Top 3 Keseluruhan
-st.markdown('<div class="iphone-glass-card">', unsafe_allow_html=True)
-st.markdown("<h4 style='color: #ffd700; font-weight: 700; margin-bottom: 5px;'>🏆 Podium Top 3 Mahasiswa Berprestasi Jasmani (Keseluruhan)</h4>", unsafe_allow_html=True)
-p1, p2, p3 = st.columns(3)
-with p1:
-    st.markdown("""<div class="podium-card"><span style='font-size: 28px;'>🥈</span><h3 style='margin: 5px 0 0 0; color: white;'>AFFAN HIDAYATUR</h3><p style='color: rgba(255,255,255,0.6); font-size: 0.8rem; margin: 0;'>Laki-laki (L)</p><h2 style='color: #ffd700; margin-top: 10px;'>95.4</h2></div>""", unsafe_allow_html=True)
-with p2:
-    st.markdown("""<div class="podium-card" style='border: 2px solid #ffd700; background: linear-gradient(135deg, rgba(255,215,0,0.25), rgba(255,255,255,0.05));'><span style='font-size: 36px;'>👑</span><h3 style='margin: 5px 0 0 0; color: #ffd700;'>AGUS SINATRIYA</h3><p style='color: rgba(255,255,255,0.6); font-size: 0.8rem; margin: 0;'>Laki-laki (L)</p><h2 style='color: #ffd700; margin-top: 10px;'>98.2</h2></div>""", unsafe_allow_html=True)
-with p3:
-    st.markdown("""<div class="podium-card"><span style='font-size: 28px;'>🥉</span><h3 style='margin: 5px 0 0 0; color: white;'>ADRIAN RIZKI</h3><p style='color: rgba(255,255,255,0.6); font-size: 0.8rem; margin: 0;'>Laki-laki (L)</p><h2 style='color: #ffd700; margin-top: 10px;'>94.0</h2></div>""", unsafe_allow_html=True)
 st.markdown('</div>', unsafe_allow_html=True)
