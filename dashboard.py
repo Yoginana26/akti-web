@@ -228,10 +228,10 @@ with col_g2:
     st.markdown("<h4 style='color: #ffffff; font-weight: 700; margin-bottom: 5px;'>⚡ Indikator Performa Institusi (Gauge)</h4>", unsafe_allow_html=True)
     st.markdown("<p style='font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-bottom: 15px;'>Posisi rata-rata angkatan terhadap standar target kelulusan (75.0).</p>", unsafe_allow_html=True)
 
-    fig_gauge = go.Figure(go.Indicator(
+fig_gauge = go.Figure(go.Indicator(
         mode = "gauge+number+delta",
         value = 78.4,
-        delta = {'reference': 75.0, 'valuefmt': ".1f", 'increasing': {'color': "#4ade80"}},
+        delta = {'reference': 75.0, 'increasing': {'color': "#4ade80"}},
         number = {'font': {'color': 'white', 'size': 45}},
         gauge = {
             'axis': {'range': [0, 100], 'tickwidth': 1, 'tickcolor': "white"},
@@ -252,17 +252,6 @@ with col_g2:
             }
         }
     ))
-    fig_gauge.update_layout(
-        paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
-        font=dict(color='white', family='Plus Jakarta Sans'),
-        margin=dict(t=20, b=20, l=20, r=20),
-        height=270
-    )
-    st.plotly_chart(fig_gauge, use_container_width=True)
-    st.markdown('</div>', unsafe_allow_html=True)
-
-# --- VISUALISASI LANJUTAN (Radar Chart & Bar Chart Item Tes) ---
-col_r1, col_r2 = st.columns(2)
 
 with col_r1:
     st.markdown('<div class="iphone-glass-card">', unsafe_allow_html=True)
