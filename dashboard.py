@@ -4,7 +4,11 @@ import plotly.express as px
 import plotly.graph_objects as go
 
 # Konfigurasi Halaman Dashboard
-st.set_page_config(page_title="Dashboard Eksekutif Test Fisik AKTI", page_icon="🛡️", layout="wide")
+st.set_page_config(
+    page_title="Dashboard Eksekutif Test Fisik AKTI", 
+    page_icon="🛡️", 
+    layout="wide"
+)
 
 # Styling CSS Kustom: Tema Maroon, Putih, Gold & Bubble Glassmorphism ala iPhone
 st.markdown("""
@@ -95,6 +99,16 @@ st.markdown("""
         font-weight: 500;
     }
 
+    /* Podium Kartu Gold */
+    .podium-card {
+        background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(255, 255, 255, 0.03));
+        border: 1px solid rgba(212, 175, 55, 0.4);
+        border-radius: 20px;
+        padding: 20px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    }
+
     /* KPI Metric styling */
     .metric-container {
         background: rgba(255, 255, 255, 0.04);
@@ -111,7 +125,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Header Utama dengan Logo AKTI (Base64 atau Direct URL Render) & Efek Bubble Glass
+# Header Utama dengan Logo AKTI & Efek Bubble Glass
 st.markdown("""
     <div class="app-header">
         <div class="akti-logo-container">
@@ -125,13 +139,18 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# Tombol Aksi Canggih
-col_rf1, col_rf2, col_rf3 = st.columns([2, 1, 2])
-with col_rf2:
-    if st.button("🔄 Perbarui Analisis Data"):
-        st.toast("Data analitik berhasil disinkronkan!", icon="✨")
-
-st.write("")
+# --- PANEL FILTER INTERAKTIF MANAJEMEN ---
+st.markdown('<div class="iphone-glass-card">', unsafe_allow_html=True)
+col_f1, col_f2, col_f3 = st.columns(3)
+with col_f1:
+    filter_gender = st.selectbox("👥 Filter Jenis Kelamin", ["Semua Gender", "Laki-laki (L)", "Perempuan (P)"])
+with col_f2:
+    filter_kategori = st.selectbox("🎯 Filter Kategori Kebugaran", ["Semua Kategori", "Sangat Bagus (86-100)", "Bagus (71-85)", "Cukup (56-70)", "Kurang (<55)"])
+with col_f3:
+    st.write("")
+    if st.button("🔄 Segarkan Data Analitik", use_container_width=True):
+        st.toast("Data analitik berhasil diperbarui secara real-time!", icon="✨")
+st.markdown('</div>', unsafe_allow_html=True)
 
 # --- KARTU KPI EKSEKUTIF ---
 st.markdown('<div class="iphone-glass-card">', unsafe_allow_html=True)
@@ -177,7 +196,7 @@ with kpi4:
 
 st.markdown('</div>', unsafe_allow_html=True)
 
-# --- GRAFIK PLOTLY YANG CANGGIH & MEWAH ---
+# --- VISUALISASI UTAMA (Donut Chart & Gauge Speedometer) ---
 col_g1, col_g2 = st.columns(2)
 
 with col_g1:
@@ -185,25 +204,19 @@ with col_g1:
     st.markdown("<h4 style='color: #ffffff; font-weight: 700; margin-bottom: 5px;'>🎯 Distribusi Kategori Kebugaran Jasmani</h4>", unsafe_allow_html=True)
     st.markdown("<p style='font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-bottom: 15px;'>Proporsi klasifikasi tingkat kebugaran seluruh mahasiswa.</p>", unsafe_allow_html=True)
 
-    # Data Distribusi Kategori
     df_kategori = pd.DataFrame({
-        'Kategori': ['Sangat Bagus\n(86-100)', 'Bagus\n(71-85)', 'Cukup\n(56-70)', 'Kurang\n(<55)'],
+        'Kategori': ['Sangat Bagus (86-100)', 'Bagus (71-85)', 'Cukup (56-70)', 'Kurang (<55)'],
         'Jumlah': [28, 45, 15, 6]
     })
 
     fig_donut = px.pie(
-        df_kategori, 
-        names='Kategori', 
-        values='Jumlah', 
-        hole=0.65,
+        df_kategori, names='Kategori', values='Jumlah', hole=0.65,
         color_discrete_sequence=['#ffd700', '#f59e0b', '#3b82f6', '#ef4444']
     )
     fig_donut.update_layout(
-        paper_bgcolor='rgba(0,0,0,0)',
-        plot_bgcolor='rgba(0,0,0,0)',
+        paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
         font=dict(color='white', family='Plus Jakarta Sans'),
-        showlegend=True,
-        legend=dict(orientation="h", yanchor="bottom", y=-0.3, xanchor="center", x=0.5),
+        showlegend=True, legend=dict(orientation="h", yanchor="bottom", y=-0.3, xanchor="center", x=0.5),
         margin=dict(t=10, b=30, l=10, r=10)
     )
     fig_donut.update_traces(textinfo='percent+label', marker=dict(line=dict(color='#3b0707', width=3)))
@@ -212,39 +225,139 @@ with col_g1:
 
 with col_g2:
     st.markdown('<div class="iphone-glass-card">', unsafe_allow_html=True)
-    st.markdown("<h4 style='color: #ffffff; font-weight: 700; margin-bottom: 5px;'>📊 Rata-rata Skor Berdasarkan Item Tes</h4>", unsafe_allow_html=True)
-    st.markdown("<p style='font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-bottom: 15px;'>Evaluasi performa rata-rata per item uji kemampuan fisik.</p>", unsafe_allow_html=True)
+    st.markdown("<h4 style='color: #ffffff; font-weight: 700; margin-bottom: 5px;'>⚡ Indikator Performa Institusi (Gauge)</h4>", unsafe_allow_html=True)
+    st.markdown("<p style='font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-bottom: 15px;'>Posisi rata-rata angkatan terhadap standar target kelulusan (75.0).</p>", unsafe_allow_html=True)
 
-    # Data Item Tes
+    fig_gauge = go.Figure(go.Indicator(
+        mode = "gauge+number+delta",
+        value = 78.4,
+        delta = {'reference': 75.0, 'valuefmt': ".1f", 'increasing': {'color': "#4ade80"}},
+        number = {'font': {'color': 'white', 'size': 45}},
+        gauge = {
+            'axis': {'range': [0, 100], 'tickwidth': 1, 'tickcolor': "white"},
+            'bar': {'color': "#ffd700"},
+            'bgcolor': "rgba(255,255,255,0.05)",
+            'borderwidth': 2,
+            'bordercolor': "rgba(255,255,255,0.2)",
+            'steps': [
+                {'range': [0, 55], 'color': 'rgba(239, 68, 68, 0.4)'},
+                {'range': [55, 70], 'color': 'rgba(59, 130, 246, 0.4)'},
+                {'range': [70, 85], 'color': 'rgba(245, 158, 11, 0.4)'},
+                {'range': [85, 100], 'color': 'rgba(255, 215, 0, 0.4)'}
+            ],
+            'threshold': {
+                'line': {'color': "white", 'width': 4},
+                'thickness': 0.75,
+                'value': 75.0
+            }
+        }
+    ))
+    fig_gauge.update_layout(
+        paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
+        font=dict(color='white', family='Plus Jakarta Sans'),
+        margin=dict(t=20, b=20, l=20, r=20),
+        height=270
+    )
+    st.plotly_chart(fig_gauge, use_container_width=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+
+# --- VISUALISASI LANJUTAN (Radar Chart & Bar Chart Item Tes) ---
+col_r1, col_r2 = st.columns(2)
+
+with col_r1:
+    st.markdown('<div class="iphone-glass-card">', unsafe_allow_html=True)
+    st.markdown("<h4 style='color: #ffffff; font-weight: 700; margin-bottom: 5px;'>🕸️ Profil Kebugaran Jasmani (Radar Chart)</h4>", unsafe_allow_html=True)
+    st.markdown("<p style='font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-bottom: 15px;'>Pemetaan kekuatan dan kelemahan rata-rata per item uji.</p>", unsafe_allow_html=True)
+
+    categories = ['Bleep Test', 'Pull-Up', 'Sit-Up', 'Push-Up', 'Shuttle Run']
+    scores = [82.5, 74.0, 85.5, 79.0, 80.2]
+
+    fig_radar = go.Figure()
+    fig_radar.add_trace(go.Scatterpolar(
+        r=scores, theta=categories, fill='toself',
+        name='Rata-rata Angkatan',
+        fillcolor='rgba(212, 175, 55, 0.3)',
+        line=dict(color='#ffd700', width=3)
+    ))
+    fig_radar.update_layout(
+        polar=dict(
+            radialaxis=dict(visible=True, range=[0, 100], color='rgba(255,255,255,0.6)', gridcolor='rgba(255,255,255,0.1)'),
+            angularaxis=dict(color='white', gridcolor='rgba(255,255,255,0.1)')
+        ),
+        paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
+        font=dict(color='white', family='Plus Jakarta Sans'),
+        showlegend=False,
+        margin=dict(t=20, b=20, l=20, r=20),
+        height=300
+    )
+    st.plotly_chart(fig_radar, use_container_width=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+
+with col_r2:
+    st.markdown('<div class="iphone-glass-card">', unsafe_allow_html=True)
+    st.markdown("<h4 style='color: #ffffff; font-weight: 700; margin-bottom: 5px;'>📊 Perbandingan Skor per Item Tes</h4>", unsafe_allow_html=True)
+    st.markdown("<p style='font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-bottom: 15px;'>Evaluasi detail tingkat pencapaian tiap komponen tes jasmani.</p>", unsafe_allow_html=True)
+
     df_item = pd.DataFrame({
         'Item Tes': ['Bleep Test', 'Pull-Up', 'Sit-Up', 'Push-Up', 'Shuttle Run'],
         'Skor': [82.5, 74.0, 85.5, 79.0, 80.2]
     })
 
     fig_bar = px.bar(
-        df_item, 
-        x='Item Tes', 
-        y='Skor',
-        text='Skor',
-        color='Skor',
+        df_item, x='Item Tes', y='Skor', text='Skor', color='Skor',
         color_continuous_scale=['#b91c1c', '#f59e0b', '#ffd700']
     )
     fig_bar.update_layout(
-        paper_bgcolor='rgba(0,0,0,0)',
-        plot_bgcolor='rgba(0,0,0,0)',
+        paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
         font=dict(color='white', family='Plus Jakarta Sans'),
         coloraxis_showscale=False,
         xaxis=dict(title='', showgrid=False),
         yaxis=dict(title='Skor Rata-rata', showgrid=True, gridcolor='rgba(255,255,255,0.1)'),
-        margin=dict(t=10, b=10, l=10, r=10)
+        margin=dict(t=10, b=10, l=10, r=10),
+        height=300
     )
     fig_bar.update_traces(texttemplate='%{text:.1f}', textposition='outside', marker=dict(cornerradius=8))
     st.plotly_chart(fig_bar, use_container_width=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
+# --- PODIUM TOP 3 MAHASISWA TERBAIK ---
+st.markdown('<div class="iphone-glass-card">', unsafe_allow_html=True)
+st.markdown("<h4 style='color: #ffd700; font-weight: 700; margin-bottom: 5px;'>🏆 Podium Top 3 Mahasiswa Berprestasi Jasmani</h4>", unsafe_allow_html=True)
+st.markdown("<p style='font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-bottom: 20px;'>Apresiasi bagi mahasiswa dengan skor rata-rata tertinggi di angkatan.</p>", unsafe_allow_html=True)
+
+p1, p2, p3 = st.columns(3)
+with p1:
+    st.markdown("""
+        <div class="podium-card">
+            <span style='font-size: 28px;'>🥈</span>
+            <h3 style='margin: 5px 0 0 0; color: white;'>AFFAN HIDAYATUR</h3>
+            <p style='color: rgba(255,255,255,0.6); font-size: 0.8rem; margin: 0;'>NIM: PM04 • Laki-laki</p>
+            <h2 style='color: #ffd700; margin-top: 10px;'>95.4</h2>
+        </div>
+    """, unsafe_allow_html=True)
+with p2:
+    st.markdown("""
+        <div class="podium-card" style='border: 2px solid #ffd700; background: linear-gradient(135deg, rgba(255,215,0,0.25), rgba(255,255,255,0.05));'>
+            <span style='font-size: 36px;'>👑</span>
+            <h3 style='margin: 5px 0 0 0; color: #ffd700;'>AGUS SINATRIYA</h3>
+            <p style='color: rgba(255,255,255,0.6); font-size: 0.8rem; margin: 0;'>NIM: PM05 • Laki-laki</p>
+            <h2 style='color: #ffd700; margin-top: 10px;'>98.2</h2>
+        </div>
+    """, unsafe_allow_html=True)
+with p3:
+    st.markdown("""
+        <div class="podium-card">
+            <span style='font-size: 28px;'>🥉</span>
+            <h3 style='margin: 5px 0 0 0; color: white;'>ADRIAN RIZKI</h3>
+            <p style='color: rgba(255,255,255,0.6); font-size: 0.8rem; margin: 0;'>NIM: PM03 • Laki-laki</p>
+            <h2 style='color: #ffd700; margin-top: 10px;'>94.0</h2>
+        </div>
+    """, unsafe_allow_html=True)
+st.markdown('</div>', unsafe_allow_html=True)
+
 # --- TABEL EVALUASI KHUSUS ---
 st.markdown('<div class="iphone-glass-card">', unsafe_allow_html=True)
-st.markdown("<h4 style='color: #ffffff; font-weight: 700; margin-bottom: 5px;'>🚨 Daftar Mahasiswa Membutuhkan Pendampingan Khusus</h4>", unsafe_allow_html=True)
+st.markdown("<h4 style='color: #f87171; font-weight: 700; margin-bottom: 5px;'>🚨 Daftar Mahasiswa Membutuhkan Pendampingan Khusus</h4>", unsafe_allow_html=True)
 st.markdown("<p style='font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-bottom: 20px;'>Mahasiswa dengan kategori Kurang (<55) yang memerlukan program latihan intensif dari pelatih jasmani.</p>", unsafe_allow_html=True)
 
 df_perhatian = pd.DataFrame([
