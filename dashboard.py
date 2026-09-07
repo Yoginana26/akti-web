@@ -60,6 +60,7 @@ data_master = [
     {"Nama": "FAJAR RISKI", "Gender": "Laki-laki (L)", "Bleep": 45, "Pull": 50, "Sit": 50, "Push": 50, "Shuttle": 63, "Rata_rata": 51.6, "Kategori": "Kurang (<55)", "Status": "Hadir"},
     {"Nama": "TARUNA", "Gender": "Laki-laki (L)", "Bleep": 42, "Pull": 50, "Sit": 50, "Push": 50, "Shuttle": 50, "Rata_rata": 48.4, "Kategori": "Kurang (<55)", "Status": "Hadir"},
     {"Nama": "USAMAH", "Gender": "Laki-laki (L)", "Bleep": 44, "Pull": 50, "Sit": 50, "Push": 50, "Shuttle": 50, "Rata_rata": 48.8, "Kategori": "Kurang (<55)", "Status": "Hadir"},
+    # Mahasiswa Berhalangan / Sakit
     {"Nama": "MERI MARLIANA", "Gender": "Perempuan (P)", "Bleep": 0, "Pull": 0, "Sit": 0, "Push": 0, "Shuttle": 0, "Rata_rata": 0, "Kategori": "Berhalangan", "Status": "Sakit", "Keterangan": "Surat Dokter (Istirahat)"},
     {"Nama": "MUHAMMAD ADIEB ASSHULTHONI", "Gender": "Laki-laki (L)", "Bleep": 0, "Pull": 0, "Sit": 0, "Push": 0, "Shuttle": 0, "Rata_rata": 0, "Kategori": "Berhalangan", "Status": "Sakit", "Keterangan": "Surat Dokter"},
     {"Nama": "MUHAMMAD HARY ADI SYAPUTRA PURBA", "Gender": "Laki-laki (L)", "Bleep": 0, "Pull": 0, "Sit": 0, "Push": 0, "Shuttle": 0, "Rata_rata": 0, "Kategori": "Berhalangan", "Status": "Sakit", "Keterangan": "Izin Medis"}
@@ -79,7 +80,7 @@ with col_f3:
         st.toast("Data analitik berhasil disinkronkan!", icon="✨")
 st.markdown('</div>', unsafe_allow_html=True)
 
-# Logika Pemfilteran Data
+# Logika Pemfilteran Data yang Disempurnakan
 df_filtered = df_master[df_master['Status'] == 'Hadir']
 if filter_gender != "Semua Gender":
     df_filtered = df_filtered[df_filtered['Gender'] == filter_gender]
@@ -150,7 +151,7 @@ if filter_gender == "Semua Gender" and filter_kategori == "Semua Kategori":
     st.markdown('</div>', unsafe_allow_html=True)
 
 else:
-    # JIKA FILTER DIAKTIFKAN, TAMPILKAN HANYA LIST PERINGKAT 1-3 (TANPA TABEL LAGI)
+    # JIKA FILTER DIAKTIFKAN, TAMPILKAN HASIL FILTER & PERINGKAT BERDASARKAN FILTER
     st.markdown('<div class="iphone-glass-card">', unsafe_allow_html=True)
     st.markdown(f"<h4 style='color: #ffd700; font-weight: 700; margin-bottom: 5px;'>🔍 Hasil Filter Aktif: {filter_gender} | {filter_kategori}</h4>", unsafe_allow_html=True)
     st.markdown("<p style='font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-bottom: 15px;'>Daftar peringkat mahasiswa berdasarkan pilihan filter.</p>", unsafe_allow_html=True)
@@ -160,7 +161,6 @@ else:
     else:
         df_sorted = df_filtered.sort_values(by='Rata_rata', ascending=False).reset_index(drop=True)
         
-        # Menampilkan hanya daftar peringkat 1 sampai 3 (atau sebanyak data yang ada jika kurang dari 3)
         for idx, row in df_sorted.head(3).iterrows():
             medali = ["👑", "🥈", "🥉"][idx]
             st.markdown(f"""
@@ -201,10 +201,20 @@ with col_r2:
     st.plotly_chart(fig_bar, use_container_width=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
-# --- TABEL MAHASISWA BERHALANGAN ---
+# --- TABEL MAHASISWA BERHALANGAN (SAKIT/IZIN) ---
 st.markdown('<div class="iphone-glass-card">', unsafe_allow_html=True)
 st.markdown("<h4 style='color: #60a5fa; font-weight: 700; margin-bottom: 5px;'>🏥 Daftar Mahasiswa Berhalangan (Sakit / Izin)</h4>", unsafe_allow_html=True)
 df_sakit_aktual = df_master[df_master['Status'] == 'Sakit'].reset_index(drop=True)
 df_sakit_aktual.index = df_sakit_aktual.index + 1
 st.dataframe(df_sakit_aktual[['Nama', 'Gender', 'Status', 'Keterangan']].rename(columns={'Nama': 'Nama Mahasiswa'}), use_container_width=True)
+st.markdown('</div>', unsafe_allow_html=True)
+
+# --- TABEL MAHASISWA MEMBUTUHKAN PENDAMPINGAN KHUSUS (KURANG <55) ---
+st.markdown('<div class="iphone-glass-card">', unsafe_allow_html=True)
+st.markdown("<h4 style='color: #f87171; font-weight: 700; margin-bottom: 5px;'>🚨 Daftar Mahasiswa Membutuhkan Pendampingan Khusus (Skor Kurang <55)</h4>", unsafe_allow_html=True)
+st.markdown("<p style='font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-bottom: 20px;'>Daftar mahasiswa yang masuk dalam kategori Kurang dan memerlukan bimbingan khusus.</p>", unsafe_allow_html=True)
+
+df_perhatian_aktual = df_master[df_master['Kategori'] == 'Kurang (<55)'].reset_index(drop=True)
+df_perhatian_aktual.index = df_perhatian_aktual.index + 1
+st.dataframe(df_perhatian_aktual[['Nama', 'Gender', 'Rata_rata']].rename(columns={'Nama': 'Nama Mahasiswa', 'Rata_rata': 'Nilai Rata-rata'}), use_container_width=True)
 st.markdown('</div>', unsafe_allow_html=True)
